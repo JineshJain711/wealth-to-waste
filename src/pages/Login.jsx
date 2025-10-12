@@ -68,16 +68,11 @@ const Login = () => {
       
       // Mock successful login for demo
       setTimeout(() => {
-        const mockUser = {
-          id: '1',
-          name: formData.email.split('@')[0],
-          email: formData.email,
-          role: formData.role
-        };
-        const mockToken = 'mock-jwt-token-' + Date.now();
+        // ✅ Extract user & token from backend response
+        const { user, token } = response.data;
 
-        localStorage.setItem('user', JSON.stringify(mockUser));
-        localStorage.setItem('token', mockToken);
+        localStorage.setItem('user', JSON.stringify(user));
+        localStorage.setItem('token', token);
 
         setMessage({ type: 'success', text: 'Login successful! Redirecting...' });
         

@@ -498,9 +498,17 @@ body {
   color: var(--white);
   padding: 0.3rem 1rem;
   border-radius: 20px;
-  font-size: 0.9rem;
-  font-weight: 500;
-  margin-bottom: 1rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 0;
+  box-shadow: 0 2px 8px rgba(46, 125, 50, 0.08);
+  letter-spacing: 0.5px;
+  vertical-align: middle;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+.item-category:hover {
+  background: #1B5E20;
+  box-shadow: 0 4px 16px rgba(46, 125, 50, 0.15);
 }
 
 /* Spinner/Loader */

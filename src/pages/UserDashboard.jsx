@@ -17,11 +17,27 @@ const UserDashboard = () => {
   });
 
   // Mock data for user's requests
-  const [myRequests, setMyRequests] = useState([
-    { id: 1, itemName: 'Plastic Bottles', category: 'Plastic', quantity: '50 kg', status: 'Pending', date: '2025-10-08', recycler: 'Not assigned' },
-    { id: 2, itemName: 'Old Newspapers', category: 'Paper', quantity: '30 kg', status: 'Accepted', date: '2025-10-07', recycler: 'Green Recyclers' },
-    { id: 3, itemName: 'Metal Cans', category: 'Metal', quantity: '20 kg', status: 'Completed', date: '2025-10-05', recycler: 'EcoMetal Ltd' }
-  ]);
+  const [myRequests, setMyRequests] = useState([]);
+
+  const fetchMyItems = async () => {
+    try {
+      const token = localStorage.getItem('token');
+
+      const response = await axios.get('http://localhost:3000/api/items/my', {
+        headers: {Authorization: `Bearer ${token}`}
+      });
+
+      setMyRequests(response.data);
+
+    }
+    catch (error) {
+      console.error('Error fetching items: ', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchMyItems();
+  }, []);
 
   const handleItemFormChange = (e) => {
     const { name, value } = e.target;
@@ -39,34 +55,45 @@ const UserDashboard = () => {
     try {
       // Simulate API call
       // await axios.post('/api/items', itemForm);
+
+      const token = localStorage.getItem('token');
+
+      const response = await axios.post(
+        'http://localhost:3000/api/items',
+        itemForm,
+        {
+          headers: { Authorization: `Bearer ${token}`}
+        }
+      );
       
-      setTimeout(() => {
-        setMessage({ type: 'success', text: 'Item listed successfully!' });
-        setItemForm({ name: '', category: 'Plastic', quantity: '', description: '' });
-        setLoading(false);
-        
-        // Add to requests
-        const newRequest = {
-          id: myRequests.length + 1,
-          itemName: itemForm.name,
-          category: itemForm.category,
-          quantity: itemForm.quantity + ' kg',
-          status: 'Pending',
-          date: new Date().toISOString().split('T')[0],
-          recycler: 'Not assigned'
-        };
-        setMyRequests(prev => [newRequest, ...prev]);
-      }, 1000);
+      setMessage({ type: 'Success', text: response.data.message });
+      setItemForm({ name: '', category: 'Plastic', quantity: '', description: '' });
+      setLoading(false);
+
+      // refresh item list
+      fetchMyItems();
+
     } catch (error) {
       setLoading(false);
-      setMessage({ type: 'error', text: 'Failed to list item. Please try again.' });
+      setMessage({ type: 'error', text: error.response?.data?.message || 'Failed to list item..!!' });
     }
   };
 
-  const handleCancelRequest = (id) => {
+  const handleCancelRequest = async (id) => {
     if (window.confirm('Are you sure you want to cancel this request?')) {
-      setMyRequests(prev => prev.filter(req => req.id !== id));
-      setMessage({ type: 'success', text: 'Request cancelled successfully!' });
+      try {
+        const token = localStorage.getItem('token');
+
+        const response = await axios.delete(`http://localhost:3000/api/items/${id}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+
+        setMessage({ type: 'success', text: response.data.message });
+        fetchMyItems();
+      }
+      catch (error) {
+        setMessage({ type: 'error', text: 'Failed to cancel request..!!'});
+      }
     }
   };
 
@@ -85,13 +112,21 @@ const UserDashboard = () => {
       {/* Dashboard Header */}
       <div className="dashboard-header">
         <h1 className="dashboard-title">
-          <FaRecycle /> Welcome, {user?.name}!
+          <FaRecycle /> Welcome, {user?.name?.split(' ')[0]}!
         </h1>
-        <p className="dashboard-subtitle">Manage your recyclable items and track pickup requests</p>
+        <p className="dashboard-subtitle">
+          Manage your recyclable items and track pickup requests
+        </p>
       </div>
 
       {message.text && (
-        <div className={`alert ${message.type === 'success' ? 'alert-success-custom' : 'alert-error-custom'} alert-custom`}>
+        <div
+          className={`alert ${
+            message.type === "success"
+              ? "alert-success-custom"
+              : "alert-error-custom"
+          } alert-custom`}
+        >
           {message.text}
         </div>
       )}
@@ -100,16 +135,18 @@ const UserDashboard = () => {
       <ul className="nav nav-tabs mb-4">
         <li className="nav-item">
           <button
-            className={`nav-link ${activeTab === 'list-item' ? 'active' : ''}`}
-            onClick={() => setActiveTab('list-item')}
+            className={`nav-link ${activeTab === "list-item" ? "active" : ""}`}
+            onClick={() => setActiveTab("list-item")}
           >
             <FaPlus /> List New Item
           </button>
         </li>
         <li className="nav-item">
           <button
-            className={`nav-link ${activeTab === 'my-requests' ? 'active' : ''}`}
-            onClick={() => setActiveTab('my-requests')}
+            className={`nav-link ${
+              activeTab === "my-requests" ? "active" : ""
+            }`}
+            onClick={() => setActiveTab("my-requests")}
           >
             <FaList /> My Requests
           </button>
@@ -117,7 +154,7 @@ const UserDashboard = () => {
       </ul>
 
       {/* Tab Content */}
-      {activeTab === 'list-item' && (
+      {activeTab === "list-item" && (
         <div className="card-custom p-4">
           <h3 className="mb-4 text-primary-green">
             <FaRecycle /> List Recyclable Item
@@ -179,7 +216,11 @@ const UserDashboard = () => {
                 ></textarea>
               </div>
             </div>
-            <button type="submit" className="btn btn-primary-custom" disabled={loading}>
+            <button
+              type="submit"
+              className="btn btn-primary-custom"
+              disabled={loading}
+            >
               {loading ? (
                 <>
                   <span className="spinner-border spinner-border-sm me-2"></span>
@@ -195,7 +236,7 @@ const UserDashboard = () => {
         </div>
       )}
 
-      {activeTab === 'my-requests' && (
+      {activeTab === "my-requests" && (
         <div className="card-custom">
           <div className="card-header-custom">
             <FaTruck /> My Pickup Requests
@@ -215,11 +256,13 @@ const UserDashboard = () => {
               </thead>
               <tbody>
                 {myRequests.length > 0 ? (
-                  myRequests.map(request => (
+                  myRequests.map((request) => (
                     <tr key={request.id}>
-                      <td className="fw-bold">{request.itemName}</td>
+                      <td className="font-bold text-gray-700">{request.name}</td>
                       <td>
-                        <span className="item-category">{request.category}</span>
+                        <span className="item-category">
+                          {request.category}
+                        </span>
                       </td>
                       <td>{request.quantity}</td>
                       <td>
@@ -227,10 +270,19 @@ const UserDashboard = () => {
                           {request.status}
                         </span>
                       </td>
-                      <td>{request.date}</td>
+                      <td>
+                        {new Date(request.createdAt).toLocaleDateString(
+                          "en-GB",
+                          {
+                            day: "2-digit",
+                            month: "short",
+                            year: "numeric",
+                          }
+                        )}
+                      </td>
                       <td>{request.recycler}</td>
                       <td>
-                        {request.status === 'Pending' && (
+                        {request.status === "Pending" && (
                           <button
                             className="btn btn-danger-custom btn-sm"
                             onClick={() => handleCancelRequest(request.id)}

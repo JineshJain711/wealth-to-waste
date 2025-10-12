@@ -74,7 +74,7 @@ const Navbar = () => {
                 </li>
                 <li className="nav-item">
                   <button className="nav-link btn btn-link" onClick={handleLogout}>
-                    <FaSignOutAlt /> Logout ({user.name})
+                    <FaSignOutAlt /> Logout ({user.name.split(' ')[0]})
                   </button>
                 </li>
               </>
