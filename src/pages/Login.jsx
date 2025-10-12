@@ -64,7 +64,7 @@ const Login = () => {
 
     try {
       // Simulate API call - Replace with actual API endpoint
-      const response = await axios.post('http://localhost:3000/api/auth/login', formData);
+      const response = await axios.post('http://localhost:5000/api/auth/login', formData);
       
       // Mock successful login for demo
       setTimeout(() => {

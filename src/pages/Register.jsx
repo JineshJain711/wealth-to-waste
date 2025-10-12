@@ -78,7 +78,7 @@ const Register = () => {
 
     try {
       // Simulate API call - Replace with actual API endpoint
-      const response = await axios.post('http://localhost:3000/api/auth/register', formData);
+      const response = await axios.post('http://localhost:5000/api/auth/register', formData);
       
       // Mock successful registration for demo
       setTimeout(() => {

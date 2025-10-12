@@ -23,7 +23,7 @@ const UserDashboard = () => {
     try {
       const token = localStorage.getItem('token');
 
-      const response = await axios.get('http://localhost:3000/api/items/my', {
+      const response = await axios.get('http://localhost:5000/api/items/my', {
         headers: {Authorization: `Bearer ${token}`}
       });
 
@@ -59,7 +59,7 @@ const UserDashboard = () => {
       const token = localStorage.getItem('token');
 
       const response = await axios.post(
-        'http://localhost:3000/api/items',
+        'http://localhost:5000/api/items',
         itemForm,
         {
           headers: { Authorization: `Bearer ${token}`}
@@ -84,7 +84,7 @@ const UserDashboard = () => {
       try {
         const token = localStorage.getItem('token');
 
-        const response = await axios.delete(`http://localhost:3000/api/items/${id}`, {
+        const response = await axios.delete(`http://localhost:5000/api/items/${id}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
 
