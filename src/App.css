@@ -113,6 +113,17 @@ body {
   transition: all 0.3s ease;
 }
 
+.btn-danger-custom1:disabled,
+.btn-danger-custom1.disabled {
+  background: #f44336;
+  color: #fff;
+  opacity: 0.5;
+  cursor: not-allowed;
+  box-shadow: none;
+  filter: grayscale(40%);
+  pointer-events: none;
+}
+
 .btn-danger-custom:hover {
   background: #d32f2f;
   transform: translateY(-2px);

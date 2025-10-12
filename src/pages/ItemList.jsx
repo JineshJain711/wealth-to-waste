@@ -1,20 +1,36 @@
-import React, { useState } from 'react';
-import { FaSearch, FaFilter, FaRecycle, FaUser, FaClock } from 'react-icons/fa';
+import React, { useState, useEffect } from 'react';
+import { FaSearch, FaFilter, FaRecycle, FaUser, FaClock, FaCheckCircle } from 'react-icons/fa';
+import axios from 'axios';
 
 const ItemList = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('All');
   const [statusFilter, setStatusFilter] = useState('All');
+  const [message, setMessage] = useState({ type: '', text: '' });
 
   // Mock data for items
-  const [items] = useState([
-    { id: 1, name: 'Plastic Bottles', category: 'Plastic', quantity: '50 kg', postedBy: 'John Doe', status: 'Available', date: '2025-10-08', description: 'Clean PET bottles, sorted and ready for pickup' },
-    { id: 2, name: 'Old Newspapers', category: 'Paper', quantity: '30 kg', postedBy: 'Jane Smith', status: 'Accepted', date: '2025-10-07', description: 'Bundled newspapers in good condition' },
-    { id: 3, name: 'Metal Cans', category: 'Metal', quantity: '20 kg', postedBy: 'Mike Johnson', status: 'Completed', date: '2025-10-05', description: 'Aluminum cans, crushed and bagged' },
-    { id: 4, name: 'Cardboard Boxes', category: 'Paper', quantity: '40 kg', postedBy: 'Sarah Williams', status: 'Available', date: '2025-10-08', description: 'Flattened cardboard boxes from packaging' },
-    { id: 5, name: 'E-Waste (Old Phones)', category: 'E-Waste', quantity: '15 kg', postedBy: 'David Brown', status: 'Available', date: '2025-10-06', description: 'Old mobile phones and chargers' },
-    { id: 6, name: 'Glass Bottles', category: 'Glass', quantity: '35 kg', postedBy: 'Emily Davis', status: 'Available', date: '2025-10-07', description: 'Mixed glass bottles, cleaned' }
-  ]);
+  const [items, setItems] = useState([]);
+
+  const token  = localStorage.getItem('token');
+
+  useEffect(() => {
+    const fetchItems = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(
+          "http://localhost:5000/api/items/available",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        setItems(response.data);
+      } catch (error) {
+        console.error("Error fetching items: ", error);
+      }
+    };
+
+    fetchItems();
+  }, []);
 
   // Filter items based on search and filters
   const filteredItems = items.filter(item => {
@@ -25,6 +41,23 @@ const ItemList = () => {
     
     return matchesSearch && matchesCategory && matchesStatus;
   });
+
+  const handleAcceptRequest = async (id) => {
+      try {
+        const response = await axios.put(`http://localhost:5000/api/items/accept/${id}`,
+          {},
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+  
+        setMessage({ type: 'success', text: response.data.message });
+        // fetchAvailableRequests();
+        // fetchAcceptedJobs();
+        window.location.reload();
+      }
+      catch (error) {
+        setMessage({ type: 'error', text: error.response?.data?.message || 'Error accepting request' });
+      }
+    };
 
   const getStatusBadge = (status) => {
     const badges = {
@@ -41,7 +74,9 @@ const ItemList = () => {
         <h1 className="dashboard-title">
           <FaRecycle /> Browse Recyclable Items
         </h1>
-        <p className="dashboard-subtitle">Explore available items for recycling</p>
+        <p className="dashboard-subtitle">
+          Explore available items for recycling
+        </p>
       </div>
 
       {/* Search and Filter Section */}
@@ -49,7 +84,14 @@ const ItemList = () => {
         <div className="row">
           <div className="col-md-6 mb-3">
             <div className="input-group">
-              <span className="input-group-text" style={{ background: '#2E7D32', color: 'white', borderRadius: '10px 0 0 10px' }}>
+              <span
+                className="input-group-text"
+                style={{
+                  background: "#2E7D32",
+                  color: "white",
+                  borderRadius: "10px 0 0 10px",
+                }}
+              >
                 <FaSearch />
               </span>
               <input
@@ -58,7 +100,7 @@ const ItemList = () => {
                 placeholder="Search items..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                style={{ borderRadius: '0 10px 10px 0' }}
+                style={{ borderRadius: "0 10px 10px 0" }}
               />
             </div>
           </div>
@@ -71,9 +113,9 @@ const ItemList = () => {
               <option value="All">All Categories</option>
               <option value="Plastic">Plastic</option>
               <option value="Metal">Metal</option>
-              <option value="Paper">Paper</option>
+              {/* <option value="Paper">Paper</option> */}
               <option value="E-Waste">E-Waste</option>
-              <option value="Glass">Glass</option>
+              {/* <option value="Glass">Glass</option> */}
             </select>
           </div>
           <div className="col-md-3 mb-3">
@@ -94,33 +136,46 @@ const ItemList = () => {
       {/* Items Grid */}
       <div className="row">
         {filteredItems.length > 0 ? (
-          filteredItems.map(item => (
+          filteredItems.map((item) => (
             <div key={item.id} className="col-md-6 col-lg-4 mb-4">
               <div className="item-card">
-                <div className="item-card-header">
-                  {item.name}
-                </div>
+                <div className="item-card-header">{item.name}</div>
                 <div className="item-card-body">
                   <span className="item-category">{item.category}</span>
-                  <h5 className="mt-3 mb-2 fw-bold">Quantity: {item.quantity}</h5>
+                  <h5 className="mt-3 mb-2 fw-bold">
+                    Quantity: {item.quantity}
+                  </h5>
                   <p className="text-muted mb-3">{item.description}</p>
-                  
+
                   <div className="d-flex justify-content-between align-items-center mb-2">
                     <small className="text-muted">
-                      <FaUser /> {item.postedBy}
+                      <FaUser /> {item.user?.name}
                     </small>
                     <small className="text-muted">
-                      <FaClock /> {item.date}
+                      <FaClock />{" "}
+                      {new Date(item.createdAt).toLocaleDateString("en-GB", {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric",
+                      })}
                     </small>
                   </div>
-                  
+
                   <div className="d-flex justify-content-between align-items-center">
-                    <span className={getStatusBadge(item.status)}>{item.status}</span>
-                    {item.status === 'Available' && (
+                    <span className={getStatusBadge(item.status)}>
+                      {item.status}
+                    </span>
+                    {item.status === "Available" && (
                       <button className="btn btn-success-custom btn-sm">
                         Request Pickup
                       </button>
                     )}
+                    <button
+                      className="btn btn-success-custom btn-sm"
+                      onClick={() => handleAcceptRequest(item._id)}
+                    >
+                      <FaCheckCircle /> Accept
+                    </button>
                   </div>
                 </div>
               </div>

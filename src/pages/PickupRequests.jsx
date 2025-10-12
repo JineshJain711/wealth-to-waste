@@ -1,31 +1,85 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaTruck, FaFilter, FaEdit } from 'react-icons/fa';
+import axios from 'axios';
 
 const PickupRequests = () => {
   const user = JSON.parse(localStorage.getItem('user'));
   const [statusFilter, setStatusFilter] = useState('All');
   const [message, setMessage] = useState({ type: '', text: '' });
+  const [requests, setRequests] = useState([]);
+  const [acceptedJobs, setAcceptedJobs] = useState([]);
 
-  // Mock data for pickup requests
-  const [requests, setRequests] = useState([
-    { id: 1, itemName: 'Plastic Bottles', user: 'John Doe', recycler: 'Green Recyclers', quantity: '50 kg', status: 'Pending', date: '2025-10-08', location: 'Mumbai' },
-    { id: 2, itemName: 'Old Newspapers', user: 'Jane Smith', recycler: 'Green Recyclers', quantity: '30 kg', status: 'Accepted', date: '2025-10-07', location: 'Delhi' },
-    { id: 3, itemName: 'Metal Cans', user: 'Mike Johnson', recycler: 'EcoMetal Ltd', quantity: '20 kg', status: 'Completed', date: '2025-10-05', location: 'Bangalore' },
-    { id: 4, itemName: 'Cardboard Boxes', user: 'Sarah Williams', recycler: 'Not assigned', quantity: '40 kg', status: 'Pending', date: '2025-10-08', location: 'Chennai' },
-    { id: 5, itemName: 'E-Waste', user: 'David Brown', recycler: 'TechRecycle', quantity: '15 kg', status: 'Accepted', date: '2025-10-06', location: 'Pune' }
-  ]);
+  const token = localStorage.getItem('token');
+
+  useEffect(() => {
+    const fetchRequests = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:5000/api/items/accepted",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        setRequests(response.data);
+      } catch (error) {
+        console.error("Error fetching pickup requests:", error);
+      }
+    };
+    fetchRequests();
+  }, []);
 
   // Filter requests
   const filteredRequests = requests.filter(req => 
     statusFilter === 'All' || req.status === statusFilter
   );
+  
 
-  const handleUpdateStatus = (id, newStatus) => {
-    setRequests(prev => prev.map(req => 
-      req.id === id ? { ...req, status: newStatus } : req
-    ));
-    setMessage({ type: 'success', text: `Status updated to ${newStatus}` });
-    setTimeout(() => setMessage({ type: '', text: '' }), 3000);
+  const fetchAcceptedJobs = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/items/accepted', {
+          headers: { Authorization: `Bearer ${token}`}
+        });
+  
+        setRequests(response.data);
+      }
+      catch (error) {
+        console.error('Error in fetching accepted jobs: ', error);
+      }
+    };
+
+  const handleUpdateStatus = async (id, newStatus) => {
+    try {
+      if (newStatus === "Accepted") {
+        await axios.put(
+          `http://localhost:5000/api/items/accept/${id}`,
+          {},
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+      } else if (newStatus === "Completed") {
+        await axios.put(
+          `http://localhost:5000/api/items/complete/${id}`,
+          {},
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+      }
+      setMessage({ type: "success", text: `Status updated to ${newStatus}` });
+      setTimeout(() => setMessage({ type: "", text: "" }), 3000);
+
+      // Refresh requests from backend
+      const response = await axios.get("http://localhost:5000/api/items/accepted", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setRequests(response.data);
+    } catch (error) {
+      setMessage({
+        type: "error",
+        text: error.response?.data?.message || "Error updating status",
+      });
+    }
   };
 
   const getStatusBadge = (status) => {
@@ -97,7 +151,7 @@ const PickupRequests = () => {
                 <th>User</th>
                 <th>Recycler</th>
                 <th>Quantity</th>
-                <th>Location</th>
+                {/* <th>Location</th> */}
                 <th>Status</th>
                 <th>Date</th>
                 {canUpdateStatus() && <th>Actions</th>}
@@ -106,18 +160,27 @@ const PickupRequests = () => {
             <tbody>
               {filteredRequests.length > 0 ? (
                 filteredRequests.map(request => (
-                  <tr key={request.id}>
-                    <td className="fw-bold">{request.itemName}</td>
-                    <td>{request.user}</td>
+                  <tr key={request._id}>
+                    <td className="fw-bold">{request.name}</td>
+                    <td>{request.user.name}</td>
                     <td>{request.recycler}</td>
                     <td>{request.quantity}</td>
-                    <td>{request.location}</td>
+                    {/* <td>{request.location}</td> */}
                     <td>
                       <span className={getStatusBadge(request.status)}>
                         {request.status}
                       </span>
                     </td>
-                    <td>{request.date}</td>
+                    <td>
+                      {new Date(request.createdAt).toLocaleDateString(
+                          "en-GB",
+                          {
+                            day: "2-digit",
+                            month: "short",
+                            year: "numeric",
+                          }
+                        )}
+                    </td>
                     {canUpdateStatus() && (
                       <td>
                         {request.status === 'Pending' && (
@@ -131,7 +194,7 @@ const PickupRequests = () => {
                         {request.status === 'Accepted' && (
                           <button
                             className="btn btn-primary-custom btn-sm"
-                            onClick={() => handleUpdateStatus(request.id, 'Completed')}
+                            onClick={() => handleUpdateStatus(request._id, 'Completed')}
                           >
                             Complete
                           </button>

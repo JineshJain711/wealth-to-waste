@@ -8,10 +8,11 @@ const UserDashboard = () => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ type: '', text: '' });
   
+  
   // Form state for listing items
   const [itemForm, setItemForm] = useState({
     name: '',
-    category: 'Plastic',
+    category: '',
     quantity: '',
     description: ''
   });
@@ -66,7 +67,7 @@ const UserDashboard = () => {
         }
       );
       
-      setMessage({ type: 'Success', text: response.data.message });
+      setMessage({ type: 'success', text: response.data.message });
       setItemForm({ name: '', category: 'Plastic', quantity: '', description: '' });
       setLoading(false);
 
@@ -112,7 +113,7 @@ const UserDashboard = () => {
       {/* Dashboard Header */}
       <div className="dashboard-header">
         <h1 className="dashboard-title">
-          <FaRecycle /> Welcome, {user?.name?.split(' ')[0]}!
+          <FaRecycle /> Welcome, {user?.name?.split(" ")[0]}!
         </h1>
         <p className="dashboard-subtitle">
           Manage your recyclable items and track pickup requests
@@ -182,16 +183,19 @@ const UserDashboard = () => {
                   onChange={handleItemFormChange}
                   required
                 >
+                  <option value="" disabled>
+                    Select Category
+                  </option>
                   <option value="Plastic">Plastic</option>
                   <option value="Metal">Metal</option>
-                  <option value="Paper">Paper</option>
+                  {/* <option value="Paper">Paper</option> */}
                   <option value="E-Waste">E-Waste</option>
-                  <option value="Glass">Glass</option>
-                  <option value="Other">Other</option>
+                  {/* <option value="Glass">Glass</option>
+                  <option value="Other">Other</option> */}
                 </select>
               </div>
               <div className="col-md-6 mb-3">
-                <label className="form-label-custom">Quantity (kg)</label>
+                <label className="form-label-custom">Quantity (units)</label>
                 <input
                   type="number"
                   className="form-control form-control-custom"
@@ -258,7 +262,9 @@ const UserDashboard = () => {
                 {myRequests.length > 0 ? (
                   myRequests.map((request) => (
                     <tr key={request.id}>
-                      <td className="font-bold text-gray-700">{request.name}</td>
+                      <td className="font-bold text-gray-700">
+                        {request.name}
+                      </td>
                       <td>
                         <span className="item-category">
                           {request.category}
@@ -280,16 +286,21 @@ const UserDashboard = () => {
                           }
                         )}
                       </td>
-                      <td>{request.recycler}</td>
                       <td>
-                        {request.status === "Pending" && (
+                        {request.recycler || request.recycler.name ? (
+                          request.recycler
+                        ) : (
+                          <span className="text-muted">Not assigned</span>
+                        )}
+                      </td>
+                      <td>
                           <button
-                            className="btn btn-danger-custom btn-sm"
+                            className={request.status === "Pending" ? "btn btn-danger-custom btn-sm" : "btn btn-danger-custom1"}
                             onClick={() => handleCancelRequest(request.id)}
+                            disabled={request.status !== "Pending"}
                           >
                             <FaTrash /> Cancel
                           </button>
-                        )}
                       </td>
                     </tr>
                   ))

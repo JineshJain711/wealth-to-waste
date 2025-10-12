@@ -27,7 +27,7 @@ const Home = () => {
                   <Link to="/register" className="btn btn-primary-custom btn-lg me-3">
                     Get Started
                   </Link>
-                  <Link to="/login" className="btn btn-outline-custom btn-lg">
+                  <Link to="/login" className="btn btn-primary-custom btn-lg">
                     Login
                   </Link>
                 </>
