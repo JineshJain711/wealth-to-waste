@@ -163,7 +163,7 @@ const PickupRequests = () => {
                   <tr key={request._id}>
                     <td className="fw-bold">{request.name}</td>
                     <td>{request.user.name}</td>
-                    <td>{request.recycler}</td>
+                    <td>{request.recycler ? request.recycler.name : 'Not assigned'}</td>
                     <td>{request.quantity}</td>
                     {/* <td>{request.location}</td> */}
                     <td>

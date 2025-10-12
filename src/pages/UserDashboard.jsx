@@ -261,7 +261,7 @@ const UserDashboard = () => {
               <tbody>
                 {myRequests.length > 0 ? (
                   myRequests.map((request) => (
-                    <tr key={request.id}>
+                    <tr key={request._id}>
                       <td className="font-bold text-gray-700">
                         {request.name}
                       </td>
@@ -287,8 +287,8 @@ const UserDashboard = () => {
                         )}
                       </td>
                       <td>
-                        {request.recycler || request.recycler.name ? (
-                          request.recycler
+                        {request.recycler ? (
+                          request.recycler.name
                         ) : (
                           <span className="text-muted">Not assigned</span>
                         )}
@@ -296,7 +296,7 @@ const UserDashboard = () => {
                       <td>
                           <button
                             className={request.status === "Pending" ? "btn btn-danger-custom btn-sm" : "btn btn-danger-custom1"}
-                            onClick={() => handleCancelRequest(request.id)}
+                            onClick={() => handleCancelRequest(request._id)}
                             disabled={request.status !== "Pending"}
                           >
                             <FaTrash /> Cancel
