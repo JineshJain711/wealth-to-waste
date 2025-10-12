@@ -62,7 +62,7 @@ const RecyclerDashboard = () => {
     // fetchAvailableRequests();
     fetchCompletedRequests();
     fetchAcceptedJobs();
-  }, []);
+  }, [fetchCompletedRequests, fetchAcceptedJobs]);
 
   const handleAcceptRequest = async (id) => {
     try {
@@ -97,9 +97,9 @@ const RecyclerDashboard = () => {
     }
   };
 
-  const formateDate = (date) => {
-    new Date(date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric'});
-  }
+  // const formateDate = (date) => {
+  //   new Date(date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric'});
+  // }
 
   // const getStatusBadge = (status) => {
   //   return status === 'Available' ? 'badge-pending' : 'badge-accepted';

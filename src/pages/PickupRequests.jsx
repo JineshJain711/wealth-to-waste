@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FaTruck, FaFilter, FaEdit } from 'react-icons/fa';
+import { FaTruck, FaFilter } from 'react-icons/fa';
 import axios from 'axios';
 
 const PickupRequests = () => {
@@ -7,7 +7,7 @@ const PickupRequests = () => {
   const [statusFilter, setStatusFilter] = useState('All');
   const [message, setMessage] = useState({ type: '', text: '' });
   const [requests, setRequests] = useState([]);
-  const [acceptedJobs, setAcceptedJobs] = useState([]);
+  // const [acceptedJobs, setAcceptedJobs] = useState([]);
 
   const token = localStorage.getItem('token');
 
@@ -26,7 +26,7 @@ const PickupRequests = () => {
       }
     };
     fetchRequests();
-  }, []);
+  }, [token]);
 
   // Filter requests
   const filteredRequests = requests.filter(req => 

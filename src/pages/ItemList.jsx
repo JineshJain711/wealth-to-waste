@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FaSearch, FaFilter, FaRecycle, FaUser, FaClock, FaCheckCircle } from 'react-icons/fa';
+import { FaSearch, FaRecycle, FaUser, FaClock, FaCheckCircle } from 'react-icons/fa';
 import axios from 'axios';
 
 const ItemList = () => {
