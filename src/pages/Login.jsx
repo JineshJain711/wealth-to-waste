@@ -160,7 +160,7 @@ const Login = () => {
                     >
                       <option value="User">User (Waste Donor)</option>
                       <option value="Recycler">Recycler</option>
-                      <option value="Admin">Admin</option>
+                      {/* <option value="Admin">Admin</option> */}
                     </select>
                     {errors.role && (
                       <div className="invalid-feedback">{errors.role}</div>

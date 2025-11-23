@@ -151,6 +151,7 @@ const PickupRequests = () => {
                 <th>User</th>
                 <th>Recycler</th>
                 <th>Quantity</th>
+                <th>UPI ID</th>
                 {/* <th>Location</th> */}
                 <th>Status</th>
                 <th>Date</th>
@@ -165,6 +166,7 @@ const PickupRequests = () => {
                     <td>{request.user.name}</td>
                     <td>{request.recycler ? request.recycler.name : 'Not assigned'}</td>
                     <td>{request.quantity}</td>
+                    <td>{request.upiId}</td>
                     {/* <td>{request.location}</td> */}
                     <td>
                       <span className={getStatusBadge(request.status)}>

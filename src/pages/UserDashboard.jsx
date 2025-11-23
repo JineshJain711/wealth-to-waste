@@ -14,7 +14,8 @@ const UserDashboard = () => {
     name: '',
     category: '',
     quantity: '',
-    description: ''
+    description: '',
+    upiId: ''
   });
 
   // Mock data for user's requests
@@ -206,6 +207,18 @@ const UserDashboard = () => {
                   min="1"
                   required
                 />
+              </div>
+              <div>
+                <label className="form-label-custom">UPI ID</label>
+                <input
+                  type="text"
+                  className="form-control form-control-custom"
+                  name="upiId"
+                  value={itemForm.upiId}
+                  onChange={handleItemFormChange}
+                  placeholder="Enter your UPI ID for payments"
+                  required
+                /> 
               </div>
               <div className="col-md-12 mb-3">
                 <label className="form-label-custom">Description</label>
