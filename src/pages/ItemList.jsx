@@ -18,7 +18,7 @@ const ItemList = () => {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          "http://localhost:5000/api/items/available",
+          "https://waste-to-wealth-backend.vercel.app/api/items/available",
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -44,7 +44,7 @@ const ItemList = () => {
 
   const handleAcceptRequest = async (id) => {
       try {
-        const response = await axios.put(`http://localhost:5000/api/items/accept/${id}`,
+        const response = await axios.put(`https://waste-to-wealth-backend.vercel.app/api/items/accept/${id}`,
           {},
           { headers: { Authorization: `Bearer ${token}` } }
         );

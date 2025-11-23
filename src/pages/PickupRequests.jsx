@@ -15,7 +15,7 @@ const PickupRequests = () => {
     const fetchRequests = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5000/api/items/accepted",
+          "https://waste-to-wealth-backend.vercel.app/api/items/accepted",
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -36,7 +36,7 @@ const PickupRequests = () => {
 
   const fetchAcceptedJobs = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/items/accepted', {
+        const response = await axios.get('https://waste-to-wealth-backend.vercel.app/api/items/accepted', {
           headers: { Authorization: `Bearer ${token}`}
         });
   
@@ -51,7 +51,7 @@ const PickupRequests = () => {
     try {
       if (newStatus === "Accepted") {
         await axios.put(
-          `http://localhost:5000/api/items/accept/${id}`,
+          `https://waste-to-wealth-backend.vercel.app/api/items/accept/${id}`,
           {},
           {
             headers: { Authorization: `Bearer ${token}` },
@@ -59,7 +59,7 @@ const PickupRequests = () => {
         );
       } else if (newStatus === "Completed") {
         await axios.put(
-          `http://localhost:5000/api/items/complete/${id}`,
+          `https://waste-to-wealth-backend.vercel.app/api/items/complete/${id}`,
           {},
           {
             headers: { Authorization: `Bearer ${token}` },
@@ -70,7 +70,7 @@ const PickupRequests = () => {
       setTimeout(() => setMessage({ type: "", text: "" }), 3000);
 
       // Refresh requests from backend
-      const response = await axios.get("http://localhost:5000/api/items/accepted", {
+      const response = await axios.get("https://waste-to-wealth-backend.vercel.app/api/items/accepted", {
         headers: { Authorization: `Bearer ${token}` },
       });
       setRequests(response.data);

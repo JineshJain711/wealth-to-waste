@@ -78,7 +78,7 @@ const Register = () => {
 
     try {
       // Simulate API call - Replace with actual API endpoint
-      await axios.post('http://localhost:5000/api/auth/register', formData);
+      await axios.post('https://waste-to-wealth-backend.vercel.app/api/auth/register', formData);
       
       // Mock successful registration for demo
       setTimeout(() => {

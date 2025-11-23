@@ -15,7 +15,7 @@ const RecyclerDashboard = () => {
   // Fetch available requests from backend
   const fetchCompletedRequests = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/items/completed', {
+      const response = await axios.get('https://waste-to-wealth-backend.vercel.app/api/items/completed', {
         headers: { Authorization: `Bearer ${token}`}
       });
       setCompletedPickups(response.data);
@@ -28,7 +28,7 @@ const RecyclerDashboard = () => {
   // fetch accepted jobs from backend
   const fetchAcceptedJobs = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/items/accepted', {
+      const response = await axios.get('https://waste-to-wealth-backend.vercel.app/api/items/accepted', {
         headers: { Authorization: `Bearer ${token}`}
       });
 
@@ -44,7 +44,7 @@ const RecyclerDashboard = () => {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          "http://localhost:5000/api/items/available",
+          "https://waste-to-wealth-backend.vercel.app/api/items/available",
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -66,7 +66,7 @@ const RecyclerDashboard = () => {
 
   const handleAcceptRequest = async (id) => {
     try {
-      const response = await axios.put(`http://localhost:5000/api/items/accept/${id}`,
+      const response = await axios.put(`https://waste-to-wealth-backend.vercel.app/api/items/accept/${id}`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -83,9 +83,9 @@ const RecyclerDashboard = () => {
   const handleMarkCompleted = async (id) => {
     if (window.confirm('Mark this pickup as completed...')) {
       try {
-        const response = await axios.put(`http://localhost:5000/api/items/complete/${id}`, 
+        const response = await axios.put(`https://waste-to-wealth-backend.vercel.app/api/items/complete/${id}`, 
           {},
-          { headers: ({ Authorization: `Bearer ${token}` }) }
+          { headers: { Authorization: `Bearer ${token}` } }
         );
 
         setMessage({ type: 'success', text: response.data.message });

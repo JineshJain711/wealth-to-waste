@@ -25,7 +25,7 @@ const UserDashboard = () => {
     try {
       const token = localStorage.getItem('token');
 
-      const response = await axios.get('http://localhost:5000/api/items/my', {
+      const response = await axios.get('https://waste-to-wealth-backend.vercel.app/api/items/my', {
         headers: {Authorization: `Bearer ${token}`}
       });
 
@@ -61,7 +61,7 @@ const UserDashboard = () => {
       const token = localStorage.getItem('token');
 
       const response = await axios.post(
-        'http://localhost:5000/api/items',
+        'https://waste-to-wealth-backend.vercel.app/api/items',
         itemForm,
         {
           headers: { Authorization: `Bearer ${token}`}
@@ -86,7 +86,7 @@ const UserDashboard = () => {
       try {
         const token = localStorage.getItem('token');
 
-        const response = await axios.delete(`http://localhost:5000/api/items/${id}`, {
+        const response = await axios.delete(`https://waste-to-wealth-backend.vercel.app/api/items/${id}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
 
