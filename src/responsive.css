@@ -1,0 +1,54 @@
+/* Responsive media elements */
+img,
+svg,
+video {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Navbar spacing on tablets */
+@media (max-width: 992px) {
+  .navbar-custom {
+    padding: 0.5rem 0;
+  }
+  .navbar-nav .nav-link {
+    padding: 0.5rem 0.75rem !important;
+    margin: 0.25rem 0.25rem;
+  }
+}
+
+/* Section paddings and card spacing on tablets */
+@media (max-width: 768px) {
+  .hero-section {
+    padding: 3rem 0;
+  }
+  .step-card {
+    padding: 1.5rem;
+  }
+  .dashboard-header {
+    padding: 1.5rem;
+  }
+}
+
+/* Small phones: fine-tune typography and tables */
+@media (max-width: 576px) {
+  .hero-subtitle {
+    font-size: 1rem;
+  }
+  .step-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+  }
+  .step-number {
+    width: 42px;
+    height: 42px;
+    line-height: 42px;
+    font-size: 1.2rem;
+  }
+  /* Make wide tables scrollable */
+  .table-custom {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+  }
+}
